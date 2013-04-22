@@ -224,6 +224,8 @@ do ($ = jQuery, window = window, document = document) ->
       winH = $win.height()
       if docH < endY + winH
         endY = docH - winH
+      if endY < 0
+        endY = 0
       return endY
 
     # stop can't stop the scorlling immediately.

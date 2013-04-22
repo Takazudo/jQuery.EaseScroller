@@ -217,6 +217,9 @@
         if (docH < endY + winH) {
           endY = docH - winH;
         }
+        if (endY < 0) {
+          endY = 0;
+        }
         return endY;
       };
 

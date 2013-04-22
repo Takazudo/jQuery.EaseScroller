@@ -18,6 +18,12 @@ Simple smooth scroller with events and API.
 
 ## Usage
 
+1. Load jQuery
+2. Load [EaseStepper](https://github.com/Takazudo/EaseStepper/blob/gh-pages/easestepper.js) ([minified](https://github.com/Takazudo/EaseStepper/blob/gh-pages/easestepper.min.js))
+3. Load [jQuery.EaseScroller](https://github.com/Takazudo/jQuery.EaseScroller/blob/gh-pages/jquery.easescroller.js) ([minified](https://github.com/Takazudo/jQuery.EaseScroller/blob/gh-pages/jquery.easescroller.min.js))
+
+Then...
+
 ```javascript
 (new $.EaseScroller()).live();
 ```
