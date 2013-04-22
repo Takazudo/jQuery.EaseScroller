@@ -30,6 +30,10 @@ module.exports = (grunt) ->
         src: [ 'jquery.easescroller.coffee' ]
         dest: 'jquery.easescroller.js'
 
+      test:
+        src: [ 'tests/qunit/test/test.coffee' ]
+        dest: 'tests/qunit/test/test.js'
+
     concat:
 
       banner:
@@ -52,6 +56,12 @@ module.exports = (grunt) ->
         files: '<%= coffee.easescroller.src %>'
         tasks: [
           'default'
+        ]
+      test: 
+        files: '<%= coffee.test.src %>'
+        tasks: [
+          'coffee:test'
+          'growl:ok'
         ]
 
   grunt.registerTask 'default', [
