@@ -22,11 +22,14 @@ Simple smooth scroller with events and API.
 (new $.EaseScroller()).live();
 ```
 
-I like this with [jQuery easing plugin](https://github.com/danro/jquery-easing/blob/master/jquery.easing.js).
+This plugin can use easings.  
+I like following with [jQuery easing plugin](https://github.com/danro/jquery-easing/blob/master/jquery.easing.js).
 
 ```javascript
 (new $.EaseScroller({ easing: 'easeInOutExpo' })).live();
 ```
+
+You can check the result with this easing [here](http://takazudo.github.io/jQuery.EaseScroller/demos/options.html).
 
 For more info, see demos
 
