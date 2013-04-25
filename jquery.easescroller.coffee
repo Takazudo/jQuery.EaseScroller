@@ -136,8 +136,8 @@ do ($ = jQuery, window = window, document = document) ->
         beginningValue: @_startY
         endValue: @_endY
 
-      updateScrollPosition = (data) ->
-        window.scrollTo 0, data.value
+      updateScrollPosition = (data) =>
+        window.scrollTo @_startX, data.value
 
       stepper.on 'start', =>
         @trigger 'scrollstart', @_endY, @_reservedHash
@@ -157,6 +157,7 @@ do ($ = jQuery, window = window, document = document) ->
           location.hash = @_reservedHash
         @_scrollDefer.resolve()
         @trigger 'scrollend', @_endY, @_reservedHash
+        @_startX = null
 
       stepper.start()
 
@@ -192,10 +193,11 @@ do ($ = jQuery, window = window, document = document) ->
       endY = ns.calcY target
       return this if endY is false
 
-      # try to calc startY
+      # try to calc startXY
 
       @_startY = ns.scrollTop() # current scrollposition
       return this if endY is @_startY
+      @_startX = $doc.scrollLeft()
 
       # handle dontAdjustEndYIfYis option
 

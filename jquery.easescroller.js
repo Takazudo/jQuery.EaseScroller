@@ -1,5 +1,5 @@
 /*! jQuery.EaseScroller (https://github.com/Takazudo/jQuery.EaseScroller)
- * lastupdate: 2013-04-22
+ * lastupdate: 2013-04-25
  * version: 1.0.1
  * author: 'Takazudo' Takeshi Takatsudo <takazudo@gmail.com>
  * License: MIT */
@@ -137,7 +137,7 @@
           endValue: this._endY
         });
         updateScrollPosition = function(data) {
-          return window.scrollTo(0, data.value);
+          return window.scrollTo(_this._startX, data.value);
         };
         stepper.on('start', function() {
           return _this.trigger('scrollstart', _this._endY, _this._reservedHash);
@@ -158,7 +158,8 @@
             location.hash = _this._reservedHash;
           }
           _this._scrollDefer.resolve();
-          return _this.trigger('scrollend', _this._endY, _this._reservedHash);
+          _this.trigger('scrollend', _this._endY, _this._reservedHash);
+          return _this._startX = null;
         });
         stepper.start();
         return this;
@@ -192,6 +193,7 @@
         if (endY === this._startY) {
           return this;
         }
+        this._startX = $doc.scrollLeft();
         if (($.type(this.options.dontAdjustEndYIfYis)) === 'number') {
           if (endY === this.options.dontAdjustEndYIfYis) {
             handleAdjustEndY = false;
