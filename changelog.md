@@ -1,5 +1,9 @@
 # Change log
 
+## v1.1.1
+
+* handled EaseStepper's update.
+
 ## v1.1.0
 
 * Now each scrolls remembers scrollLeft position.
