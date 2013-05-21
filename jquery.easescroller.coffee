@@ -130,7 +130,7 @@ do ($ = jQuery, window = window, document = document) ->
       o = @options
 
       stepper = new EaseStepper
-        fps: o.speed
+        interval: o.speed
         easing: o.easing
         duration: o.duration
         beginningValue: @_startY

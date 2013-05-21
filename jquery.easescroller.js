@@ -1,5 +1,5 @@
 /*! jQuery.EaseScroller (https://github.com/Takazudo/jQuery.EaseScroller)
- * lastupdate: 2013-04-25
+ * lastupdate: 2013-05-21
  * version: 1.1.0
  * author: 'Takazudo' Takeshi Takatsudo <takazudo@gmail.com>
  * License: MIT */
@@ -130,7 +130,7 @@
         });
         o = this.options;
         stepper = new EaseStepper({
-          fps: o.speed,
+          interval: o.speed,
           easing: o.easing,
           duration: o.duration,
           beginningValue: this._startY,
