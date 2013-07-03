@@ -120,46 +120,55 @@ do ($ = jQuery, window = window, document = document) ->
 
     _invokeScroll: ->
 
-      # this defer tells scroll end
-      @_scrollDefer = $.Deferred()
+      # main scroll invocation
+      invoke = =>
 
-      @_scrollDefer.always =>
-        @_reservedHash = null
-        @_scrollDefer = null
+        # this defer tells scroll end
+        @_scrollDefer = $.Deferred()
 
-      o = @options
+        @_scrollDefer.always =>
+          @_reservedHash = null
+          @_scrollDefer = null
 
-      stepper = new EaseStepper
-        interval: o.speed
-        easing: o.easing
-        duration: o.duration
-        beginningValue: @_startY
-        endValue: @_endY
+        o = @options
 
-      updateScrollPosition = (data) =>
-        window.scrollTo @_startX, data.value
+        stepper = new EaseStepper
+          interval: o.speed
+          easing: o.easing
+          duration: o.duration
+          beginningValue: @_startY
+          endValue: @_endY
 
-      stepper.on 'start', =>
-        @trigger 'scrollstart', @_endY, @_reservedHash
+        updateScrollPosition = (data) =>
+          window.scrollTo @_startX, data.value
 
-      stepper.on 'step', (data) =>
-        if @_cancelNext
-          @_cancelNext = false
-          @_scrollDefer.reject()
-          stepper.stop()
-          @trigger 'scrollcancel', @_endY, @_reservedHash
-        else
+        stepper.on 'start', =>
+          @trigger 'scrollstart', @_endY, @_reservedHash
+
+        stepper.on 'step', (data) =>
+          if @_cancelNext
+            @_cancelNext = false
+            @_scrollDefer.reject()
+            stepper.stop()
+            @trigger 'scrollcancel', @_endY, @_reservedHash
+          else
+            updateScrollPosition data
+
+        stepper.on 'end', (data) =>
           updateScrollPosition data
+          if @options.changehash and @_reservedHash
+            location.hash = @_reservedHash
+          @_scrollDefer.resolve()
+          @trigger 'scrollend', @_endY, @_reservedHash
+          @_startX = null
 
-      stepper.on 'end', (data) =>
-        updateScrollPosition data
-        if @options.changehash and @_reservedHash
-          location.hash = @_reservedHash
-        @_scrollDefer.resolve()
-        @trigger 'scrollend', @_endY, @_reservedHash
-        @_startX = null
+        stepper.start()
 
-      stepper.start()
+      # handle previous scroll
+      if @_scrollDefer
+        @stop().then invoke
+      else
+        invoke()
 
       return this
 
