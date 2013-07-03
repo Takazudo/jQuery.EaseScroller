@@ -1,6 +1,6 @@
 /*! jQuery.EaseScroller (https://github.com/Takazudo/jQuery.EaseScroller)
  * lastupdate: 2013-07-04
- * version: 1.1.1
+ * version: 1.1.2
  * author: 'Takazudo' Takeshi Takatsudo <takazudo@gmail.com>
  * License: MIT */
 (function() {
