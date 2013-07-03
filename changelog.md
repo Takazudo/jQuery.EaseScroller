@@ -1,5 +1,9 @@
 # Change log
 
+## v1.1.2
+
+* Fixed: chould not handle many scrolls at once.
+
 ## v1.1.1
 
 * handled EaseStepper's update.
