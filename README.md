@@ -52,12 +52,7 @@ IE6+ and other new browsers.
 Copyright (c) 2013 "Takazudo" Takeshi Takatsudo  
 Licensed under the MIT license.
 
-## Build
+## How to develop
 
-Use
-
- * [CoffeeScript][coffeescript]
- * [grunt][grunt]
-
-[coffeescript]: http://coffeescript.org "CoffeeScript"
-[grunt]: http://gruntjs.com "grunt"
+git clone, then `git submodule init`, `git submodule update`.  
+Then, `grunt` to build or `grunt watch` to watch coffee file's change.
