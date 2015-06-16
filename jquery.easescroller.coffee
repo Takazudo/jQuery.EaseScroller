@@ -253,10 +253,8 @@ do ($ = jQuery, window = window, document = document) ->
       docH = $doc.height()
       winH = $win.height()
       if docH < endY + winH
-        console.log 'hoge'
         endY = docH - winH
       if endY < 0
-        console.log 'hoge2'
         endY = 0
       return endY
 
