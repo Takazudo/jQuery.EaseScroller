@@ -1,5 +1,5 @@
 /*! jQuery.EaseScroller (https://github.com/Takazudo/jQuery.EaseScroller)
- * lastupdate: 2013-07-04
+ * lastupdate: 2015-06-16
  * version: 1.1.2
  * author: 'Takazudo' Takeshi Takatsudo <takazudo@gmail.com>
  * License: MIT */
@@ -54,8 +54,16 @@
       y = ns.yOf($target[0]);
       return y;
     };
-    ns.scrollTop = function() {
+    ns.scrollTop = function($altScrollContainer) {
+      if ($altScrollContainer) {
+        return $altScrollContainer.scrollTop();
+      }
       return $doc.scrollTop() || document.documentElement.scrollTop || document.body.scrollTop || window.pageYOffset || 0;
+    };
+    ns.scrollLeft = function($altScrollContainer) {
+      var $el;
+      $el = $altScrollContainer || $doc;
+      return $el.scrollLeft();
     };
     ns.ua = (function() {
       var evalEach, ret, ua;
@@ -98,7 +106,8 @@
         adjustEndY: false,
         dontAdjustEndYIfSelectorIs: null,
         dontAdjustEndYIfYis: null,
-        easing: 'swing'
+        easing: 'swing',
+        altScrollContainer: null
       };
 
       function Scroller(options) {
@@ -110,6 +119,7 @@
           this.option(options);
         }
         this._handleMobile();
+        this._handleAltContainer();
       }
 
       Scroller.prototype._handleMobile = function() {
@@ -117,6 +127,14 @@
           return this;
         }
         this.options.userskip = false;
+        return this;
+      };
+
+      Scroller.prototype._handleAltContainer = function() {
+        if (!this.options.altScrollContainer) {
+          return;
+        }
+        this.$altScrollContainer = $(this.options.altScrollContainer);
         return this;
       };
 
@@ -139,7 +157,11 @@
             endValue: _this._endY
           });
           updateScrollPosition = function(data) {
-            return window.scrollTo(_this._startX, data.value);
+            if (_this.$altScrollContainer) {
+              return _this.$altScrollContainer.scrollTop(data.value);
+            } else {
+              return window.scrollTo(_this._startX, data.value);
+            }
           };
           stepper.on('start', function() {
             return _this.trigger('scrollstart', _this._endY, _this._reservedHash);
@@ -197,11 +219,11 @@
         if (endY === false) {
           return this;
         }
-        this._startY = ns.scrollTop();
+        this._startY = ns.scrollTop(this.$altScrollContainer);
         if (endY === this._startY) {
           return this;
         }
-        this._startX = $doc.scrollLeft();
+        this._startX = ns.scrollLeft(this.$altScrollContainer);
         if (($.type(this.options.dontAdjustEndYIfYis)) === 'number') {
           if (endY === this.options.dontAdjustEndYIfYis) {
             handleAdjustEndY = false;
@@ -222,12 +244,17 @@
 
       Scroller.prototype._normalizeEndYOverDoc = function(endY) {
         var docH, winH;
+        if (this.$altScrollContainer) {
+          return endY;
+        }
         docH = $doc.height();
         winH = $win.height();
         if (docH < endY + winH) {
+          console.log('hoge');
           endY = docH - winH;
         }
         if (endY < 0) {
+          console.log('hoge2');
           endY = 0;
         }
         return endY;

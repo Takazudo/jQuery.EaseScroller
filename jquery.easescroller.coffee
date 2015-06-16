@@ -59,8 +59,14 @@ do ($ = jQuery, window = window, document = document) ->
 
   # browser thing
 
-  ns.scrollTop = ->
-    $doc.scrollTop() or document.documentElement.scrollTop or document.body.scrollTop or window.pageYOffset or 0
+  ns.scrollTop = ($altScrollContainer) ->
+    if $altScrollContainer
+      return $altScrollContainer.scrollTop()
+    return $doc.scrollTop() or document.documentElement.scrollTop or document.body.scrollTop or window.pageYOffset or 0
+  
+  ns.scrollLeft = ($altScrollContainer) ->
+    $el = $altScrollContainer or $doc
+    return $el.scrollLeft()
 
   # browser detection
 
@@ -103,12 +109,14 @@ do ($ = jQuery, window = window, document = document) ->
       dontAdjustEndYIfSelectorIs: null # ex: #header
       dontAdjustEndYIfYis: null # ex: 0
       easing: 'swing' # easing name or easing function
+      altScrollContainer: null # selector or element
 
     constructor: (options = {}) ->
 
       @options = $.extend {}, ns.Scroller.defaults
       if options then @option options
       @_handleMobile()
+      @_handleAltContainer()
 
     _handleMobile: ->
 
@@ -116,6 +124,11 @@ do ($ = jQuery, window = window, document = document) ->
       # This feature must be false
       if not ns.ua.mobile then return @
       @options.userskip = false
+      return this
+    
+    _handleAltContainer: ->
+      return unless @options.altScrollContainer
+      @$altScrollContainer = $(@options.altScrollContainer)
       return this
 
     _invokeScroll: ->
@@ -140,7 +153,10 @@ do ($ = jQuery, window = window, document = document) ->
           endValue: @_endY
 
         updateScrollPosition = (data) =>
-          window.scrollTo @_startX, data.value
+          if @$altScrollContainer
+            @$altScrollContainer.scrollTop data.value
+          else
+            window.scrollTo @_startX, data.value
 
         stepper.on 'start', =>
           @trigger 'scrollstart', @_endY, @_reservedHash
@@ -204,9 +220,9 @@ do ($ = jQuery, window = window, document = document) ->
 
       # try to calc startXY
 
-      @_startY = ns.scrollTop() # current scrollposition
+      @_startY = ns.scrollTop @$altScrollContainer # current scrollposition
       return this if endY is @_startY
-      @_startX = $doc.scrollLeft()
+      @_startX = ns.scrollLeft @$altScrollContainer
 
       # handle dontAdjustEndYIfYis option
 
@@ -228,14 +244,19 @@ do ($ = jQuery, window = window, document = document) ->
 
       return this
 
-    # if endY is below the document, normalize it
+    # if endY is below the bottom edge of the document
+    # or above the document, normalize it
     _normalizeEndYOverDoc: (endY) ->
+    
+      return endY if @$altScrollContainer # it's complicated
 
       docH = $doc.height()
       winH = $win.height()
       if docH < endY + winH
+        console.log 'hoge'
         endY = docH - winH
       if endY < 0
+        console.log 'hoge2'
         endY = 0
       return endY
 
