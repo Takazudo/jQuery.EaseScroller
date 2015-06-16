@@ -1,0 +1,8 @@
+{
+  "name": "jQuery.EaseScroller",
+  "version": "1.2.0",
+  "main": "jquery.easescroller.js",
+  "ignore": [
+    "**/.*"
+  ]
+}
