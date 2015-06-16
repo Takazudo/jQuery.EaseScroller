@@ -15,6 +15,7 @@ Simple smooth scroller with events and API.
 * [Options](http://takazudo.github.io/jQuery.EaseScroller/demos/options.html)
 * [Options with live](http://takazudo.github.io/jQuery.EaseScroller/demos/options2.html)
 * [adjustEndY](http://takazudo.github.io/jQuery.EaseScroller/demos/adjustendy.html)
+* [altScrollContainer](http://takazudo.github.io/jQuery.EaseScroller/demos/overflowArea.html)
 
 ## Usage
 
