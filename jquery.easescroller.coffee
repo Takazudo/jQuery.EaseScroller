@@ -53,7 +53,7 @@ do ($ = jQuery, window = window, document = document) ->
     else
       $target = $(target)
 
-    if not $target.size() then return null
+    if not $target.length then return null
     y = ns.yOf $target[0]
     y
 
