@@ -1,5 +1,4 @@
 (function() {
-
   (function($, window, document) {
     var ns, wait;
     ns = $.EaseScrollerNs;

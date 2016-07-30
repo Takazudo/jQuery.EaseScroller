@@ -1,11 +1,11 @@
 /*! jQuery.EaseScroller (https://github.com/Takazudo/jQuery.EaseScroller)
- * lastupdate: 2015-06-16
+ * lastupdate: 2016-07-30
  * version: 1.2.1
  * author: 'Takazudo' Takeshi Takatsudo <takazudo@gmail.com>
  * License: MIT */
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty;
 
   (function($, window, document) {
     var $doc, $win, ns;
@@ -48,7 +48,7 @@
       } else {
         $target = $(target);
       }
-      if (!$target.size()) {
+      if (!$target.length) {
         return null;
       }
       y = ns.yOf($target[0]);
@@ -90,10 +90,10 @@
       }
       return ret;
     })();
-    ns.Scroller = (function(_super) {
+    ns.Scroller = (function(superClass) {
       var eventNames;
 
-      __extends(Scroller, _super);
+      extend(Scroller, superClass);
 
       eventNames = ['scrollstart', 'scrollend', 'scrollcancel'];
 
@@ -139,54 +139,55 @@
       };
 
       Scroller.prototype._invokeScroll = function() {
-        var invoke,
-          _this = this;
-        invoke = function() {
-          var o, stepper, updateScrollPosition;
-          _this._scrollDefer = $.Deferred();
-          _this._scrollDefer.always(function() {
-            _this._reservedHash = null;
-            return _this._scrollDefer = null;
-          });
-          o = _this.options;
-          stepper = new EaseStepper({
-            interval: o.speed,
-            easing: o.easing,
-            duration: o.duration,
-            beginningValue: _this._startY,
-            endValue: _this._endY
-          });
-          updateScrollPosition = function(data) {
-            if (_this.$altScrollContainer) {
-              return _this.$altScrollContainer.scrollTop(data.value);
-            } else {
-              return window.scrollTo(_this._startX, data.value);
-            }
+        var invoke;
+        invoke = (function(_this) {
+          return function() {
+            var o, stepper, updateScrollPosition;
+            _this._scrollDefer = $.Deferred();
+            _this._scrollDefer.always(function() {
+              _this._reservedHash = null;
+              return _this._scrollDefer = null;
+            });
+            o = _this.options;
+            stepper = new EaseStepper({
+              interval: o.speed,
+              easing: o.easing,
+              duration: o.duration,
+              beginningValue: _this._startY,
+              endValue: _this._endY
+            });
+            updateScrollPosition = function(data) {
+              if (_this.$altScrollContainer) {
+                return _this.$altScrollContainer.scrollTop(data.value);
+              } else {
+                return window.scrollTo(_this._startX, data.value);
+              }
+            };
+            stepper.on('start', function() {
+              return _this.trigger('scrollstart', _this._endY, _this._reservedHash);
+            });
+            stepper.on('step', function(data) {
+              if (_this._cancelNext) {
+                _this._cancelNext = false;
+                _this._scrollDefer.reject();
+                stepper.stop();
+                return _this.trigger('scrollcancel', _this._endY, _this._reservedHash);
+              } else {
+                return updateScrollPosition(data);
+              }
+            });
+            stepper.on('end', function(data) {
+              updateScrollPosition(data);
+              if (_this.options.changehash && _this._reservedHash) {
+                location.hash = _this._reservedHash;
+              }
+              _this._scrollDefer.resolve();
+              _this.trigger('scrollend', _this._endY, _this._reservedHash);
+              return _this._startX = null;
+            });
+            return stepper.start();
           };
-          stepper.on('start', function() {
-            return _this.trigger('scrollstart', _this._endY, _this._reservedHash);
-          });
-          stepper.on('step', function(data) {
-            if (_this._cancelNext) {
-              _this._cancelNext = false;
-              _this._scrollDefer.reject();
-              stepper.stop();
-              return _this.trigger('scrollcancel', _this._endY, _this._reservedHash);
-            } else {
-              return updateScrollPosition(data);
-            }
-          });
-          stepper.on('end', function(data) {
-            updateScrollPosition(data);
-            if (_this.options.changehash && _this._reservedHash) {
-              location.hash = _this._reservedHash;
-            }
-            _this._scrollDefer.resolve();
-            _this.trigger('scrollend', _this._endY, _this._reservedHash);
-            return _this._startX = null;
-          });
-          return stepper.start();
-        };
+        })(this);
         if (this._scrollDefer) {
           this.stop().then(invoke);
         } else {
@@ -259,32 +260,34 @@
       };
 
       Scroller.prototype.stop = function() {
-        var _this = this;
-        return $.Deferred(function(defer) {
-          if (_this._scrollDefer) {
-            _this._cancelNext = true;
-            return _this._scrollDefer.fail(function() {
+        return $.Deferred((function(_this) {
+          return function(defer) {
+            if (_this._scrollDefer) {
+              _this._cancelNext = true;
+              return _this._scrollDefer.fail(function() {
+                return defer.resolve();
+              });
+            } else {
               return defer.resolve();
-            });
-          } else {
-            return defer.resolve();
-          }
-        }).promise();
+            }
+          };
+        })(this)).promise();
       };
 
       Scroller.prototype.option = function(options) {
-        var _this = this;
         if (!options) {
           return this.options;
         }
         this.options = $.extend({}, this.options, options);
         this._handleMobile();
-        $.each(eventNames, function(i, eventName) {
-          if (_this.options[eventName]) {
-            _this.on(eventName, _this.options[eventName]);
-          }
-          return true;
-        });
+        $.each(eventNames, (function(_this) {
+          return function(i, eventName) {
+            if (_this.options[eventName]) {
+              _this.on(eventName, _this.options[eventName]);
+            }
+            return true;
+          };
+        })(this));
         this.options.easing = ns.normalizeEasing(this.options.easing);
         return this;
       };
